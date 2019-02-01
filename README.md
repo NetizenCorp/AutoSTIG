@@ -1,2 +1,2 @@
 # AutoSTIG
-Open Source version of the popular AutoSTIG tools
+Open Source versions of the popular AutoSTIG tools created by Netizen Corporation.
