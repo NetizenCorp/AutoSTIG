@@ -1,0 +1,139 @@
+<!doctype html>
+<html class="fixed">
+	<head>
+
+		<!-- Basic -->
+		<meta charset="UTF-8">
+
+		<title>AutoSTIG</title>
+		<meta name="keywords" content="AutoSTIG" />
+		<meta name="description" content="AutoSTIG - Securing through Compliancy">
+		<meta name="author" content="Jonathan Berns">
+
+		<!-- Mobile Metas -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
+		<!-- Vendor CSS -->
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.css')}}" />
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/vendor/font-awesome/css/font-awesome.css')}}" />
+
+		<!-- Theme CSS -->
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/stylesheets/theme.css')}}" />
+
+		<!-- Skin CSS -->
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/stylesheets/skins/default.css')}}" />
+
+		<!-- Theme Custom CSS -->
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/stylesheets/theme-custom.css')}}">
+
+		<!-- Head Libs -->
+		<script src="{{url_for('static', filename='assets/vendor/modernizr/modernizr.js')}}"></script>
+		{% block head %}{% endblock %}
+	</head>
+	<body>
+		<section class="body">
+
+			<!-- start: header -->
+			<header class="header">
+				<div class="logo-container">
+					<a href="../" class="logo">
+						<img src="{{url_for('static', filename='assets/images/logo.png')}}" height="35" alt="Porto Admin" />
+					</a>
+					<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+						<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+					</div>
+				</div>
+			
+				<!-- start: search & user box -->
+				<div class="header-right">
+			
+					<form action="pages-search-results.html" class="search nav-form">
+						<div class="input-group input-search">
+							<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+							</span>
+						</div>
+					</form>
+			
+					<span class="separator"></span>
+									
+					
+				</div>
+				<!-- end: search & user box -->
+			</header>
+			<!-- end: header -->
+
+			<div class="inner-wrapper">
+				<!-- start: sidebar -->
+				<aside id="sidebar-left" class="sidebar-left">
+				
+					<div class="sidebar-header">
+						<div class="sidebar-title">
+							Navigation
+						</div>
+						<div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+							<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+						</div>
+					</div>
+				
+					<div class="nano">
+						<div class="nano-content">
+							<nav id="menu" class="nav-main" role="navigation">
+								<ul class="nav nav-main">
+									<li>
+										<a href="/">
+											<i class="fa fa-home" aria-hidden="true"></i>
+											<span>Dashboard</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</aside>
+				<!-- end: sidebar -->
+
+				<section role="main" class="content-body">
+					<header class="page-header">
+						<h2>AutoSTIG</h2>
+					
+						<div class="right-wrapper pull-right">
+							<ol class="breadcrumbs">
+								<li>
+									<a href="/">
+										<i class="fa fa-home"></i>
+									</a>
+								</li>
+								<li><span>Pages</span></li>
+								<li><span>AutoSTIG</span></li>
+							</ol>
+						</div>
+					</header>
+
+					<!-- start: page -->
+					{% block container %}{% endblock %}
+					<!-- end: page -->
+				</section>
+			</div>
+		</section>
+
+		<!-- Vendor -->
+		<script src="{{url_for('static', filename='assets/vendor/jquery/jquery.js')}}"></script>
+		<script src="{{url_for('static', filename='assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js')}}"></script>
+		<script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.js')}}"></script>
+		<script src="{{url_for('static', filename='assets/vendor/nanoscroller/nanoscroller.js')}}"></script>
+		<script src="{{url_for('static', filename='assets/vendor/jquery-placeholder/jquery.placeholder.js')}}"></script>
+		
+		<!-- Theme Base, Components and Settings -->
+		<script src="{{url_for('static', filename='assets/javascripts/theme.js')}}"></script>
+		
+		<!-- Theme Custom -->
+		<script src="{{url_for('static', filename='assets/javascripts/theme.custom.js')}}"></script>
+		
+		<!-- Theme Initialization Files -->
+		<script src="{{url_for('static', filename='assets/javascripts/theme.init.js')}}"></script>
+		{% block scripts %}{% endblock %}
+	</body>
+</html>

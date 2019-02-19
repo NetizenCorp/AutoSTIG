@@ -1,0 +1,172 @@
+{% extends "layout.html" %}
+{% block container %}
+<div class="row">
+    <div class="col-md-6 col-lg-12 col-xl-6">
+        <div class="row">
+            <div class="col-md-12 col-lg-6 col-xl-6">
+                <section class="panel panel-featured-left panel-featured-primary">
+                    <div class="panel-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-primary">
+                                    <i class="fa fa-dashboard"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">STIGs</h4>
+                                    <div class="info">
+                                        <strong id="p1" class="amount">{{ stig_status['stig_count'] }}</strong><br/>
+                                        <span id="p2" class="text-primary">({{ stig_status['zip_stig_count'] - stig_status['stig_count'] }} waiting for processing)</span>
+                                    </div>
+                                </div>
+                                <div class="summary-footer">
+                                    <a id="process_stig" class="text-muted text-uppercase">(process)</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>       
+        </div>
+    </div>
+</div>
+
+<!-- Need to get STIG data from databases and show them here.-->
+<!-- vertical -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="tabs tabs-vertical tabs-left">
+            <ul class="nav nav-tabs col-sm-3 col-xs-5">
+                <li class="active">
+                    <a  href="#popular11" data-toggle="tab" class="status">Select a STIG</a>
+                </li>
+                {% for stig in stig_status['stig_list']%}
+                <li>
+                    <a  href="#popular11" data-toggle="tab" class="status">{{ stig |replace(".scl", "") }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content">
+                <div id="popular11" class="tab-pane active">
+                    <!-- <p id='title'></p> -->
+                    <p id='body' style="display: none">
+                            <label id="label_title" class="col-md-3 control-label" for="inputReadOnly">Title</label>
+                            <input type="text" value="Read-Only Input" id="inputReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_release" class="col-md-3 control-label" for="ReleaseinputReadOnly">Release</label>
+                            <input type="text" value="Read-Only Input" id="ReleaseReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_release" class="col-md-3 control-label" for="VersioninputReadOnly">Version</label>
+                            <input type="text" value="Read-Only Input" id="VersionReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_profile" class="col-md-3 control-label" for="ProflieinputReadOnly">Profiles</label>
+                            <select id="selectElementId" class="form-control mb-md">
+                                <option value='profile'>Select Profile</option>
+                            </select>
+                            
+                            <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" id="run" value="run">Run</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $("#process_stig").click(function(e) {
+            e.preventDefault();
+            document.getElementById("p2").innerHTML = 'running';
+            document.getElementById("process_stig").innerHTML = '';
+            $.ajax({
+                type: "GET",
+                url: "/stig/process",
+                data: {},
+                success: function(result) {
+                    location.reload();
+                },
+                error: function(result) {
+                    alert('error');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).on('click', 'ul li a.status', function(e) {
+            e.preventDefault();
+            if ($(e.target).text() == 'Select a STIG'){
+                document.getElementById("title").innerHTML = '';
+                var x = document.getElementById("body");
+                x.style.display = "none";
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: "/stig/" + $(e.target).text(),
+                    data: {},
+                    success: function(result) {
+                        var x = document.getElementById("body");
+                        x.style.display = "block";
+                        document.getElementById('inputReadOnly').value = result['stig']['stig']['stig_title'];
+                        document.getElementById('ReleaseReadOnly').value = result['stig']['stig']['stig_release'];
+                        document.getElementById('VersionReadOnly').value = result['stig']['stig']['stig_version'];
+                        
+                        var select = document.getElementById('selectElementId');
+                                           
+                        select.innerHTML = "";
+                        var opt = document.createElement('option');
+                        opt.value = 'profile';
+                        opt.innerHTML = 'Select Profile';
+                        select.appendChild(opt);
+
+                        var profile_list = result['profile']['profiles']
+                        for (var i in profile_list){
+                            var opt = document.createElement('option');
+                            opt.value = profile_list[i]['profile_id'];
+                            opt.innerHTML = profile_list[i]['profile_title'];
+                            select.appendChild(opt);
+                        }
+
+                    },
+                    error: function(result) {
+                        alert('error');
+                    }
+                });
+            }      
+        });
+    </script>
+
+    <script>
+        $(document).on("click", "button", function (e) {
+            e.preventDefault();
+            //alert($(this).val());
+            if ($('#selectElementId option:selected').val() == 'profile'){
+                alert('Select Profile');
+            } else {
+                $.ajax({
+                        url: '/stig/run',
+                        data: JSON.stringify({'profile_selected':$('#selectElementId option:selected').val()}),
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        document.write(result); 
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
+
+                        $('#result').html('<p>status code: '+jqXHR.status+'</p><p>errorThrown: ' + errorThrown + '</p><p>jqXHR.responseText:</p><div>'+jqXHR.responseText + '</div>');
+                        console.log('jqXHR:');
+                        console.log(jqXHR);
+                        console.log('textStatus:');
+                        console.log(textStatus);
+                        console.log('errorThrown:');
+                        console.log(errorThrown);
+                    }
+                });
+            }
+        });
+        
+    </script>
+{% endblock %}
