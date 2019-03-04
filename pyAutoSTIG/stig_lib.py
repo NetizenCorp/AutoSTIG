@@ -214,6 +214,8 @@ class stig_data(object):
             return {'stig':stig_result[0]}
 
     def get_profile_info(self, sqlite_db, application_path, stig_filename):
+        # HACK TEST KtQ
+        print("Get profile info")
         if os.path.isfile(application_path + "/" + stig_filename + ".scl"):
             sqlite_db.sqlite_key = 'password'
             sqlite_db.database_encrypted = True
@@ -221,3 +223,27 @@ class stig_data(object):
             profile_result = sqlite_db.run_sqlite_query('''SELECT * FROM  'profiles' ''', []).get_sqlite_results()
             return {'profiles':profile_result}
 
+    def get_profile_vulns(self, sqlite_db, application_path, stig_filename):        
+        # HACK TEST KtQ, ADDED BY KtQ
+        print("Get profile vulns")
+        if os.path.isfile(application_path + "/" + stig_filename + ".scl"):
+            sqlite_db.sqlite_key = 'password'
+            sqlite_db.database_encrypted = True
+            sqlite_db.sqlite_connect(application_path + "/" + stig_filename + ".scl")
+            profile_result = sqlite_db.run_sqlite_query('''SELECT * FROM  'profile_vulns' WHERE profile_id='MAC-1_Classified' ''', []).get_sqlite_results()
+            return {'profile_vulns':profile_result}
+
+    def get_single_vuln(self, sqlite_db, application_path, vuln_id):        
+        # HACK TEST KtQ, ADDED BY KtQ
+        print("Get single vuln")
+        if os.path.isfile(application_path + "/U_MS_Windows_10_V1R16_STIG.scl"):
+            sqlite_db.sqlite_key = 'password'
+            sqlite_db.database_encrypted = True
+            sqlite_db.sqlite_connect(application_path + "/U_MS_Windows_10_V1R16_STIG.scl")
+            vuln = "'" + str(vuln_id) + "'"
+            print(vuln)
+            query = '''SELECT * FROM  'vulns' WHERE vuln_id=''' + vuln + ''' '''
+            print(query)
+            profile_result = sqlite_db.run_sqlite_query(query, []).get_sqlite_results()
+            print(profile_result)
+            return {'vuln':profile_result}

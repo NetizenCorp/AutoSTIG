@@ -1,4 +1,108 @@
 {% extends "layout.html" %}
 {% block container %}
-test
+
+
+<!-- Need to get STIG data from databases and show them here.-->
+<!-- vertical -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="tabs tabs-vertical tabs-left">
+            <ul class="nav nav-tabs col-sm-3 col-xs-5">
+                <li class="active">
+                    <a  href="#popular11" data-toggle="tab" class="status">Select VULN</a>
+                </li>
+                
+                {% for vuln in content['profile_vulns']%}
+                <li>
+                    <a  href="#popular11" data-toggle="tab" class="status">{{ vuln["vuln_id"] }}</a>
+                </li>
+                {% endfor %}
+                <!-- PEOP --> 
+            </ul>
+            <div class="tab-content">
+                <div id="popular11" class="tab-pane active">
+                    <p id='title'></p>
+                    <p id='body' style="display: none">
+                            <h3><color=red>EXAMPLE STYLE</color></h3>
+                            <label id="label_title" class="col-md-3 control-label" for="vulnIDReadOnly">ID</label>
+                            <input type="text" value="Read-Only Input" id="vulnIDReadOnly" class="form-control" readonly="readonly">
+                            
+                            <label id="label_title" class="col-md-3 control-label" for="vulnTitleReadOnly">Title</label>
+                            <input type="text" value="Read-Only Input" id="vulnTitleReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_title" class="col-md-3 control-label" for="vulnSummaryReadOnly">Title</label>
+                            <input type="text" value="Read-Only Input" id="vulnSummaryReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_release" class="col-md-3 control-label" for="vulnSeverityinputReadOnly">severity</label>
+                            <input type="text" value="Read-Only Input" id="vulnSeverityinputReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_release" class="col-md-3 control-label" for="vulnRuleDiscussioninputReadOnly">Version</label>
+                            <input type="text" value="Read-Only Input" id="vulnRuleDiscussioninputReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_profile" class="col-md-3 control-label" for="vulnRuleCheckinputReadOnly">Check Test</label>
+                            <input type="text" value="Read-Only Input" id="vulnRuleCheckinputReadOnly" class="form-control" readonly="readonly">
+                            
+                            
+                            <!-- <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" id="run" value="run">Run</button> -->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+    $(document).on('click', 'ul li a.status', function(e) {
+        e.preventDefault();
+        console.log("On click ul li a status  e");
+        if ($(e.target).text() == 'Select VULN'){
+            document.getElementById("title").innerHTML = '';
+            var x = document.getElementById("body");
+            x.style.display = "none";
+        } else {
+            $.ajax({
+                type: "GET",
+                url: "/stig/vuln/" + $(e.target).text(),
+                data: {},
+                success: function(result) {
+                    var x = document.getElementById("body");
+                    x.style.display = "block";
+                    document.getElementById('vulnIDReadOnly').value = $(e.target).text();
+                    document.getElementById('vulnTitleReadOnly').value = result['vuln']['vuln'][0]['vuln_title'];
+                    document.getElementById('vulnSummaryReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_id'];
+                    document.getElementById('vulnSeverityinputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_severity'];
+                    document.getElementById('vulnRuleDiscussioninputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_discussion'];
+                    document.getElementById('vulnRuleCheckinputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_check'];
+                    
+                    var select = document.getElementById('selectElementId');
+                                       
+                    select.innerHTML = "";
+                    var opt = document.createElement('option');
+                    opt.value = 'profile';
+                    opt.innerHTML = 'Select Profile';
+                    select.appendChild(opt);
+
+                    var profile_list = result['profile']['profiles']
+                    for (var i in profile_list){
+                        var opt = document.createElement('option');
+                        opt.value = profile_list[i]['profile_id'];
+                        opt.innerHTML = profile_list[i]['profile_title'];
+                        select.appendChild(opt);
+                    }
+
+                },
+                error: function(result) {
+                    alert('error');
+                }
+            });
+        }      
+    });
+</script>
+
 {% endblock %}

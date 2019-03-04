@@ -38,12 +38,34 @@ def get_stig(name):
     sqlite_db.sqlite_close()
 
     return jsonify({'stig':stig_info_result, 'profile':profile_info_result})
+@app.route('/stig/vuln/<name>')
+def get_vuln(name):
+    # HACK TEST KtQ
+    print("/stig/vuln/<name>")
+    sqlite_db = database_lib.Database().Sqlite()
+    application_path = os.path.dirname(__file__)
+
+    #stig_info_result = stig_lib.stig_data().get_stig_info(sqlite_db, application_path + '/STIGs', name)
+    #profile_info_result = stig_lib.stig_data().get_profile_info(sqlite_db, application_path + '/STIGs', name)
+    vuln = stig_lib.stig_data().get_single_vuln(sqlite_db, application_path + '/STIGs', name)
+    sqlite_db.sqlite_close()
+    print("here")
+    print(jsonify(vuln))
+    return jsonify({'vuln':vuln})
 
 @app.route('/stig/run', methods=['GET', "POST"])
 def run_stig():
-    content = request.json
-    print (content)
-    return render_template('section2.html')
+    # HACK TEST KtQ
+    sqlite_db = database_lib.Database().Sqlite()
+    application_path = os.path.dirname(__file__)
+
+    STIG_VULNS = stig_lib.stig_data().get_profile_vulns(sqlite_db, application_path + '/STIGs', request.json["STIG_selected"])
+    #bontent = jsonify(STIG_VULNS)
+    #data = json.loads(request.json)
+    pibber = request.json["STIG_selected"]
+    content = STIG_VULNS
+    print ("Content= " + str(pibber))
+    return render_template('section2.html', content=content)
 
 
 if __name__ ==  "__main__":
