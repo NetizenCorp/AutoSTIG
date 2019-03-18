@@ -38,6 +38,7 @@ def get_stig(name):
     sqlite_db.sqlite_close()
 
     return jsonify({'stig':stig_info_result, 'profile':profile_info_result})
+
 @app.route('/stig/vuln/<name>')
 def get_vuln(name):
     # HACK TEST KtQ
@@ -66,6 +67,11 @@ def run_stig():
     content = STIG_VULNS
     print ("Content= " + str(pibber))
     return render_template('section2.html', content=content)
+
+
+@app.route('/stig/report')
+def stig_report():
+    return render_template('section3.html')
 
 
 if __name__ ==  "__main__":

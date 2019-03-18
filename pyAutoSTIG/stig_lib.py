@@ -241,9 +241,9 @@ class stig_data(object):
             sqlite_db.database_encrypted = True
             sqlite_db.sqlite_connect(application_path + "/U_MS_Windows_10_V1R16_STIG.scl")
             vuln = "'" + str(vuln_id) + "'"
-            print(vuln)
+            #print(vuln)
             query = '''SELECT * FROM  'vulns' WHERE vuln_id=''' + vuln + ''' '''
-            print(query)
+            #print(query)
             profile_result = sqlite_db.run_sqlite_query(query, []).get_sqlite_results()
-            print(profile_result)
+            #print(profile_result)
             return {'vuln':profile_result}

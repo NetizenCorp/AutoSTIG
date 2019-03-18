@@ -2,28 +2,30 @@
 {% block container %}
 
 
-<!-- Need to get STIG data from databases and show them here.-->
+<!-- Need to get VULN data from databases and show them here.-->
 <!-- vertical -->
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8" style="height:200px">
         <div class="tabs tabs-vertical tabs-left">
-            <ul class="nav nav-tabs col-sm-3 col-xs-5">
+            <ul  style="border:10px;overflow:scroll;height:600px">
                 <li class="active">
                     <a  href="#popular11" data-toggle="tab" class="status">Select VULN</a>
                 </li>
                 
                 {% for vuln in content['profile_vulns']%}
-                <li>
-                    <a  href="#popular11" data-toggle="tab" class="status">{{ vuln["vuln_id"] }}</a>
+                <li style="border:1px;background-color: lightblue;margin:3px">
+                    <input type="checkbox" name="run_{{ vuln["vuln_id"] }}" checked>
+                    <a  href="#popular11" data-toggle="tab" class="status" style="color:red">{{ vuln["vuln_id"] }}</a>
                 </li>
                 {% endfor %}
                 <!-- PEOP --> 
             </ul>
+            <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" id="run" value="run">Run Selected</button>
             <div class="tab-content">
                 <div id="popular11" class="tab-pane active">
                     <p id='title'></p>
                     <p id='body' style="display: none">
-                            <h3><color=red>EXAMPLE STYLE</color></h3>
+                            <h3 id="vuln_heading" style="color:red;"><color=red>Select a Vuln</color></h3>
                             <label id="label_title" class="col-md-3 control-label" for="vulnIDReadOnly">ID</label>
                             <input type="text" value="Read-Only Input" id="vulnIDReadOnly" class="form-control" readonly="readonly">
                             
@@ -41,9 +43,23 @@
                             <br>
                             <label id="label_profile" class="col-md-3 control-label" for="vulnRuleCheckinputReadOnly">Check Test</label>
                             <input type="text" value="Read-Only Input" id="vulnRuleCheckinputReadOnly" class="form-control" readonly="readonly">
+                            <br>
+                            <label id="label_profile" class="col-md-3 control-label" for="vulnRuleCheckinputReadOnly">Status</label>
+                            <select id="selectElementId" class="form-control mb-md">
+                                <!-- TODO color these options open is red, not finding is green -->
+                                    <option value='profile'><color=green>Not Reviewed</color></option>
+                                    <option value='profile'>Open</option>
+                                    <option value='profile'>Not a Finding</option>
+                                    <option value='profile'>Not Applicable</option>
+                            </select>
+                            <label id="label_profile" class="col-md-3 control-label" for="vulnRuleCheckinputReadOnly">Severity Override</label>
+                            <select id="selectElementId" class="form-control mb-md">
+                                    <option value='profile'>Cat I</option>
+                                    <option value='profile'>Cat II</option>
+                                    <option value='profile'>Cat III</option>
+                            </select>
                             
                             
-                            <!-- <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" id="run" value="run">Run</button> -->
                     </p>
                 </div>
             </div>
@@ -73,6 +89,7 @@
                 success: function(result) {
                     var x = document.getElementById("body");
                     x.style.display = "block";
+                    document.getElementById('vuln_heading').innerText = $(e.target).text();
                     document.getElementById('vulnIDReadOnly').value = $(e.target).text();
                     document.getElementById('vulnTitleReadOnly').value = result['vuln']['vuln'][0]['vuln_title'];
                     document.getElementById('vulnSummaryReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_id'];
@@ -80,7 +97,8 @@
                     document.getElementById('vulnRuleDiscussioninputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_discussion'];
                     document.getElementById('vulnRuleCheckinputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_check'];
                     
-                    var select = document.getElementById('selectElementId');
+                    
+                    /*var select = document.getElementById('selectElementId');
                                        
                     select.innerHTML = "";
                     var opt = document.createElement('option');
@@ -94,7 +112,7 @@
                         opt.value = profile_list[i]['profile_id'];
                         opt.innerHTML = profile_list[i]['profile_title'];
                         select.appendChild(opt);
-                    }
+                    }*/
 
                 },
                 error: function(result) {
