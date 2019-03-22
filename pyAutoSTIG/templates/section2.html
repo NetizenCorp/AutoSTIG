@@ -4,6 +4,8 @@
 
 <!-- Need to get VULN data from databases and show them here.-->
 <!-- vertical -->
+
+
 <div class="row">
     <div class="col-md-8" style="height:200px">
         <div class="tabs tabs-vertical tabs-left">
@@ -14,8 +16,8 @@
                 
                 {% for vuln in content['profile_vulns']%}
                 <li style="border:1px;background-color: lightblue;margin:3px">
-                    <input type="checkbox" name="run_{{ vuln["vuln_id"] }}" checked>
-                    <a  href="#popular11" data-toggle="tab" class="status" style="color:red">{{ vuln["vuln_id"] }}</a>
+                    <input type="checkbox" class="vCheck" name="{{ vuln["vuln_id"] }}" checked>
+                    <a href="#popular11" data-toggle="tab" class="status" style="color:red">{{ vuln["vuln_id"] }}</a>
                 </li>
                 {% endfor %}
                 <!-- PEOP --> 
@@ -47,7 +49,7 @@
                             <label id="label_profile" class="col-md-3 control-label" for="vulnRuleCheckinputReadOnly">Status</label>
                             <select id="selectElementId" class="form-control mb-md">
                                 <!-- TODO color these options open is red, not finding is green -->
-                                    <option value='profile'><color=green>Not Reviewed</color></option>
+                                    <option value='profile' style='color:$00FF00'>Not Reviewed</color></option>
                                     <option value='profile'>Open</option>
                                     <option value='profile'>Not a Finding</option>
                                     <option value='profile'>Not Applicable</option>
@@ -58,8 +60,6 @@
                                     <option value='profile'>Cat II</option>
                                     <option value='profile'>Cat III</option>
                             </select>
-                            
-                            
                     </p>
                 </div>
             </div>
@@ -121,6 +121,25 @@
             });
         }      
     });
+</script>
+
+
+<script>
+    $(document).on("click", "button", function (e) {
+        
+        e.preventDefault();
+        console.log("WE HAVE CLICKED A BUTTON");
+        var vList = [];
+        var checkies = document.getElementsByClassName("vCheck");
+        for (let index = 0; index < checkies.length; index++) {
+            var nCheck = {vuln:checkies[index].name, run:checkies[index].checked};
+            //console.log(checkies[index].name + ": " + checkies[index].checked);
+            vList.push(nCheck);
+        }
+        console.log(JSON.stringify(vList));
+        // TODO find a place for this data, and pass it on.
+    });
+    
 </script>
 
 {% endblock %}
