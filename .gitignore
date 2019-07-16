@@ -2,3 +2,5 @@
 pyAutoSTIG/\.vscode/
 
 pyAutoSTIG/__pycache__/
+
+STIGs/
