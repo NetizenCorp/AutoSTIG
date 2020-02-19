@@ -4,6 +4,19 @@
 
 <h1 style='color:red'>Report Data to go here</h1>
 
+<ul  style="border:10px;overflow:scroll;height:600px">
+    <li class="active">
+        <a  href="#popular11" data-toggle="tab" class="status">Select VULN</a>
+    </li>
+    {{ thingsToRun['vlist'] }}
+    {% for vuln in thingsToRun %}
+    <li style="border:1px;background-color: lightblue;margin:3px">
+        <input type="checkbox" class="vCheck" name="{{ vuln["vuln_id"] }}" checked>
+        <a href="#popular11" data-toggle="tab" class="status" style="color:red">{{ vuln["vuln"] }}</a>
+    </li>
+    {% endfor %}
+    <!-- PEOP --> 
+</ul>
 
 
 {% endblock %}

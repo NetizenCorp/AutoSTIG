@@ -24,9 +24,10 @@
             </ul>
             <button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" id="run" value="run">Run Selected</button>
             <div class="tab-content">
-                <div id="popular11" class="tab-pane active">
+                <div id="popular11" class="tab-pane active" >
                     <p id='title'></p>
                     <p id='body' style="display: none">
+                        <!--
                             <h3 id="vuln_heading" style="color:red;"><color=red>Select a Vuln</color></h3>
                             <label id="label_title" class="col-md-3 control-label" for="vulnIDReadOnly">ID</label>
                             <input type="text" value="Read-Only Input" id="vulnIDReadOnly" class="form-control" readonly="readonly">
@@ -47,9 +48,9 @@
                             <input type="text" value="Read-Only Input" id="vulnRuleCheckinputReadOnly" class="form-control" readonly="readonly">
                             <br>
                             <label id="label_profile" class="col-md-3 control-label" for="vulnRuleCheckinputReadOnly">Status</label>
-                            <select id="selectElementId" class="form-control mb-md">
+                            <select id="selectElementId" class="form-control mb-md"> --> 
                                 <!-- TODO color these options open is red, not finding is green -->
-                                    <option value='profile' style='color:$00FF00'>Not Reviewed</color></option>
+<!--                                    <option value='profile' style='color:$00FF00'>Not Reviewed</color></option>
                                     <option value='profile'>Open</option>
                                     <option value='profile'>Not a Finding</option>
                                     <option value='profile'>Not Applicable</option>
@@ -59,7 +60,7 @@
                                     <option value='profile'>Cat I</option>
                                     <option value='profile'>Cat II</option>
                                     <option value='profile'>Cat III</option>
-                            </select>
+                            </select> -->
                     </p>
                 </div>
             </div>
@@ -76,7 +77,7 @@
 <script>
     $(document).on('click', 'ul li a.status', function(e) {
         e.preventDefault();
-        console.log("On click ul li a status  e");
+        console.log("On click ul li a status  Section 2");
         if ($(e.target).text() == 'Select VULN'){
             document.getElementById("title").innerHTML = '';
             var x = document.getElementById("body");
@@ -89,14 +90,17 @@
                 success: function(result) {
                     var x = document.getElementById("body");
                     x.style.display = "block";
-                    document.getElementById('vuln_heading').innerText = $(e.target).text();
-                    document.getElementById('vulnIDReadOnly').value = $(e.target).text();
-                    document.getElementById('vulnTitleReadOnly').value = result['vuln']['vuln'][0]['vuln_title'];
-                    document.getElementById('vulnSummaryReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_id'];
-                    document.getElementById('vulnSeverityinputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_severity'];
-                    document.getElementById('vulnRuleDiscussioninputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_discussion'];
-                    document.getElementById('vulnRuleCheckinputReadOnly').value = result['vuln']['vuln'][0]['vuln_rule_check'];
                     
+                    x.innerHTML = "";
+                    var mStr = ""
+                    mStr += "<h2>" + $(e.target).text() + "</h2>";
+                    mStr += "" + result['vuln']['vuln'][0]['vuln_title'] + "<br>";
+                    mStr += "" + result['vuln']['vuln'][0]['vuln_rule_id'] + "<br>";
+                    mStr += "" + result['vuln']['vuln'][0]['vuln_rule_severity'] + "<br>";
+                    mStr += "" + result['vuln']['vuln'][0]['vuln_rule_discussion'] + "<br>";
+                    mStr += "" + result['vuln']['vuln'][0]['vuln_rule_check'] + "<br>";
+                    
+                    x.innerHTML = mStr;
                     
                     /*var select = document.getElementById('selectElementId');
                                        
@@ -138,6 +142,27 @@
         }
         console.log(JSON.stringify(vList));
         // TODO find a place for this data, and pass it on.
+
+        $.ajax({
+                        url: '/stig/report',
+                        data: JSON.stringify({'vList':vList}),
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        document.write(result); 
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
+
+                        $('#result').html('<p>status code: '+jqXHR.status+'</p><p>errorThrown: ' + errorThrown + '</p><p>jqXHR.responseText:</p><div>'+jqXHR.responseText + '</div>');
+                        console.log('jqXHR:');
+                        console.log(jqXHR);
+                        console.log('textStatus:');
+                        console.log(textStatus);
+                        console.log('errorThrown:');
+                        console.log(errorThrown);
+                    }
+                });
     });
     
 </script>

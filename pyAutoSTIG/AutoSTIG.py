@@ -69,9 +69,14 @@ def run_stig():
     return render_template('section2.html', content=content)
 
 
-@app.route('/stig/report')
+@app.route('/stig/report', methods=['GET', "POST"])
 def stig_report():
-    return render_template('section3.html')
+    TTR = request.json["vList"]
+    print(TTR)
+
+    # TODO Cycle through checked vulns, run them. Establish spinning page/progress bar
+
+    return render_template('section3.html', thingsToRun=TTR)
 
 
 if __name__ ==  "__main__":
